@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>校務DX お問い合わせ窓口</title>
+<title>お問い合わせ窓口</title>
 <link rel="icon" href="logo.png">
 <style>
   :root{--g:#6d8d44;--g-d:#56723a;--g-l:#eef3e6;--bg:#f3f5ef;--line:#dfe4d8;--text:#2b3324;--sub:#7a8570;
@@ -117,7 +117,6 @@
 <div id="home">
   <div class="inner">
     <div class="hero">
-      <img class="logo" src="logo.png" alt="">
       <p>サイトの使い方がわからない、うまく動かない、こうしてほしい…など、なんでもどうぞ。<br>担当者からの返信は、この画面に表示されます（メールアドレスを教えてくれた方には、メールでもお知らせします）。
       <span class="note" style="display:block">※ 児童の名前など、個人情報は書かないでください。</span></p>
     </div>
@@ -240,6 +239,7 @@ function boot() {
   api('init', {}, true).then(d => {
     INIT = d;
     $('connErr').classList.add('hide');
+    d.title = String(d.title || '').replace(/校務\s*DX\s*/g, '').trim() || 'お問い合わせ窓口';
     $('title').textContent = d.title; document.title = d.title;
     if (!d.isAdmin && ls.get('admTok')) ls.del('admTok');
     applyAdmin();
@@ -404,10 +404,6 @@ function startNew() {
     draft.site = PARAMS.site;   // 各サイトのURLの ?site= から自動で入る
     bot(`こんにちは！「${draft.site}」のことで、何かお困りですか？`);
     askCategory();
-  } else if (INIT.sites && INIT.sites.length) {
-    bot('こんにちは！何かお困りですか？\nどのサイトのことですか？');
-    draft.step = 'site';
-    quick(INIT.sites, v => { draft.site = v === 'その他' ? '' : v; askCategory(); });
   } else {
     bot('こんにちは！何かお困りですか？');
     askCategory();
